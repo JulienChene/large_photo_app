@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">LargePhoto</string>
+
+    <string name="activity_homepage_name">Homepage</string>
+    <string name="activity_gallery_name">Gallery</string>
+
+    <string name="button_text_retry">Retry</string>
+    <string name="text_view_text_retry">Loading pictures failed.\nPlease try again.</string>
+
 </resources>
