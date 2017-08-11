@@ -18,6 +18,9 @@ import javax.inject.Inject;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Adapter interfacing the list of ImageResults and the RecyclerView
+ */
 public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ImageViewHolder>
 {
     private List<ImageResult> imageList;
@@ -60,7 +63,6 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ImageViewH
                 ImagesAdapter.this.onItemClickListener.onUserItemClicked(position);
             }
         });
-
     }
 
     @Override
@@ -90,7 +92,7 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ImageViewH
             Glide.with(itemView)
                     .load(url)
                     .apply(RequestOptions.centerCropTransform()
-                            .diskCacheStrategy(DiskCacheStrategy.RESOURCE) // Writes resources to disk after they've been decoded.
+                                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE) // Writes resources to disk after they've been decoded.
 //                            .placeholder() // Set a
 //                            .error() // Set a drawable if
                     )

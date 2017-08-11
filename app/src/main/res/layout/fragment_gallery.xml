@@ -8,7 +8,4 @@
     <include
             layout="@layout/view_image"/>
 
-    <include
-            layout="@layout/view_retry"/>
-
 </LinearLayout>

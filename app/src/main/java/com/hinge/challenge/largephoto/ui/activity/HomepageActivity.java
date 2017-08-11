@@ -1,10 +1,13 @@
 package com.hinge.challenge.largephoto.ui.activity;
 
 import android.os.Bundle;
+import android.support.annotation.VisibleForTesting;
+import android.support.test.espresso.IdlingResource;
 import com.hinge.challenge.largephoto.R;
 import com.hinge.challenge.largephoto.injection.component.DaggerImageComponent;
 import com.hinge.challenge.largephoto.injection.component.ImageComponent;
 import com.hinge.challenge.largephoto.ui.fragment.HomepageFragment;
+import com.hinge.challenge.largephoto.util.espresso.EspressoIdlingResource;
 
 public class HomepageActivity extends BaseActivity implements HomepageFragment.ImageListListener
 {
@@ -44,5 +47,11 @@ public class HomepageActivity extends BaseActivity implements HomepageFragment.I
     public void onImageClicked(int position)
     {
         this.navigator.navigateToGallery(this, position);
+    }
+
+    @VisibleForTesting
+    public IdlingResource getCountingIdlingResource()
+    {
+        return EspressoIdlingResource.getIdlingResource();
     }
 }

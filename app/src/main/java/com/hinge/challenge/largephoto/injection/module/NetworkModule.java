@@ -20,7 +20,8 @@ public class NetworkModule
 
     @Singleton
     @Provides
-    HttpLoggingInterceptor provideLoggingInterceptor() {
+    HttpLoggingInterceptor provideLoggingInterceptor()
+    {
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.HEADERS);
         return loggingInterceptor;
@@ -40,14 +41,16 @@ public class NetworkModule
 
     @Provides
     @Singleton
-    GsonConverterFactory provideGsonConverterFactory() {
+    GsonConverterFactory provideGsonConverterFactory()
+    {
         return GsonConverterFactory.create(new GsonBuilder().create());
     }
 
     @Provides
     @Singleton
     ImageApi provideGettyImagesApi(OkHttpClient httpClient,
-                                   GsonConverterFactory gsonConverterFactory) {
+                                   GsonConverterFactory gsonConverterFactory)
+    {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())

@@ -7,4 +7,8 @@
     <string name="button_text_retry">Retry</string>
     <string name="text_view_text_retry">Loading pictures failed.\nPlease try again.</string>
 
+    <string name="menu_title_delete">Delete</string>
+
+    <string name="activity_gallery_title">Gallery: %1$d / %2$d</string>
+
 </resources>

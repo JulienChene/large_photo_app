@@ -3,7 +3,6 @@ package com.hinge.challenge.largephoto.model.interactor;
 import com.hinge.challenge.largephoto.model.repository.ImageRepository;
 import dagger.internal.Preconditions;
 import io.reactivex.Observable;
-import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -21,17 +20,13 @@ public abstract class ImageInteractor<T, Params>
         this.disposables = new CompositeDisposable();
     }
 
-    protected void addDisposable(Disposable disposable)
-    {
-        Preconditions.checkNotNull(disposable);
-        Preconditions.checkNotNull(disposables);
-        disposables.add(disposable);
-    }
+    protected abstract Observable<T> buildInteractorObservable(Params params);
 
-    abstract Observable<T> buildInteractorObservable(Params params);
-
+    /**
+     * Makes sure that the Subscriber does its work on a separate thread and that the result is
+     * returned on the main thread
+     */
     public void execute(DisposableObserver<T> observer, Params params)
-//    public void execute(Disposable<T> observer, Params params)
     {
         Preconditions.checkNotNull(observer);
         final Observable<T> observable = buildInteractorObservable(params)
@@ -45,5 +40,12 @@ public abstract class ImageInteractor<T, Params>
         if (!this.disposables.isDisposed()) {
             this.disposables.dispose();
         }
+    }
+
+    protected void addDisposable(Disposable disposable)
+    {
+        Preconditions.checkNotNull(disposable);
+        Preconditions.checkNotNull(disposables);
+        disposables.add(disposable);
     }
 }

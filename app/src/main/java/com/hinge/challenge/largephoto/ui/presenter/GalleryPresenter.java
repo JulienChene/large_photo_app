@@ -21,7 +21,7 @@ public class GalleryPresenter implements Presenter
     private final ImageInteractorImpl imageInteractor;
     private final RemoveImageInteractorImpl removeImageInteractor;
     private final ImageCacheSizeInteractorImpl cacheSizeInteractor;
-    private final ImageCarouselObserver carouselObserver = new ImageCarouselObserver();
+    private ImageCarouselObserver carouselObserver;
 
     private int imagePosition = 0;
     private int cacheSize = 0;
@@ -44,7 +44,7 @@ public class GalleryPresenter implements Presenter
     @Override
     public void subscribe()
     {
-        this.startCarousel();
+        this.startCarousel(false);
     }
 
     @Override
@@ -70,17 +70,34 @@ public class GalleryPresenter implements Presenter
         this.cacheSizeInteractor.dispose();
     }
 
-    public void startCarousel()
+    public void startCarousel(boolean immediate)
     {
-        Observable.interval(2, TimeUnit.SECONDS)
+        this.carouselObserver = new ImageCarouselObserver();
+        int delay = immediate ? 0 : 2;
+
+        Observable.interval(delay, 2, TimeUnit.SECONDS)
                 .subscribe(this.carouselObserver);
+
     }
 
     public void stopCarousel()
     {
-        if (!carouselObserver.isDisposed()) {
+        if (carouselObserver != null && !carouselObserver.isDisposed()) {
             carouselObserver.dispose();
         }
+    }
+
+    private void setImagePositionByIncrement(int increment)
+    {
+        this.imagePosition = (imagePosition + increment);
+        if (cacheSize > 0) {
+            GalleryPresenter.this.imagePosition = imagePosition % cacheSize;
+        }
+    }
+
+    public void deleteImage()
+    {
+        this.removeImageInteractor.execute(new RemoveImageObserver(), this.imagePosition);
     }
 
     public void onRetryClicked()
@@ -90,7 +107,7 @@ public class GalleryPresenter implements Presenter
 
     private void loadImage(int position)
     {
-        this.imageInteractor.execute(new GetImageObserver(), this.imagePosition);
+        this.imageInteractor.execute(new GetImageObserver(), position);
     }
 
     private final class GetImageObserver extends DisposableObserver<ImageResult>
@@ -98,13 +115,12 @@ public class GalleryPresenter implements Presenter
         @Override
         public void onNext(ImageResult imageResult)
         {
-            GalleryPresenter.this.galleryView.setImage(imageResult);
+            GalleryPresenter.this.galleryView.setImage(imageResult, imagePosition + 1, cacheSize);
         }
 
         @Override
         public void onError(Throwable e)
         {
-            GalleryPresenter.this.galleryView.showRetry();
         }
 
         @Override
@@ -121,10 +137,11 @@ public class GalleryPresenter implements Presenter
         @Override
         public void onNext(Long imageResult)
         {
-            GalleryPresenter.this.imagePosition = (imagePosition + 1);
-            if (cacheSize > 0) {
-                GalleryPresenter.this.imagePosition = imagePosition % cacheSize;
+            if (cacheSize == 1) {
+                GalleryPresenter.this.stopCarousel();
             }
+
+            GalleryPresenter.this.setImagePositionByIncrement(1);
             GalleryPresenter.this.loadImage(imagePosition);
         }
 
@@ -152,7 +169,7 @@ public class GalleryPresenter implements Presenter
         @Override
         public void onError(Throwable e)
         {
-
+            GalleryPresenter.this.cacheSize = 0;
         }
 
         @Override
@@ -160,6 +177,29 @@ public class GalleryPresenter implements Presenter
         {
             // Leave the gallery, there isn't any image to show anymore
             GalleryPresenter.this.galleryView.goBack();
+        }
+    }
+
+    private final class RemoveImageObserver extends DisposableObserver<Void>
+    {
+        @Override
+        public void onNext(Void value)
+        {
+        }
+
+        @Override
+        public void onError(Throwable e)
+        {
+            // Couldn't delete image
+        }
+
+        @Override
+        public void onComplete()
+        {
+            // Image deleted successfully
+            stopCarousel();
+//            GalleryPresenter.this.setImagePositionByIncrement(-1); //
+            startCarousel(true);
         }
     }
 }

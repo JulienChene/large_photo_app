@@ -5,7 +5,7 @@ import io.reactivex.Observable;
 
 import javax.inject.Inject;
 
-public class RemoveImageInteractorImpl extends ImageInteractor<Void, String>
+public class RemoveImageInteractorImpl extends ImageInteractor<Void, Integer>
 {
     @Inject
     public RemoveImageInteractorImpl(ImageRepository imageRepository)
@@ -14,8 +14,8 @@ public class RemoveImageInteractorImpl extends ImageInteractor<Void, String>
     }
 
     @Override
-    Observable<Void> buildInteractorObservable(String url)
+    protected Observable<Void> buildInteractorObservable(Integer position)
     {
-        return this.imageRepository.removeCache(url);
+        return this.imageRepository.removeCache(position);
     }
 }

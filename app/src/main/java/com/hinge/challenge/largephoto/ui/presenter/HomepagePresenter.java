@@ -1,10 +1,10 @@
 package com.hinge.challenge.largephoto.ui.presenter;
 
-import android.util.Log;
 import com.hinge.challenge.largephoto.injection.PerActivity;
 import com.hinge.challenge.largephoto.model.ImageResult;
 import com.hinge.challenge.largephoto.model.interactor.ImageListInteractorImpl;
 import com.hinge.challenge.largephoto.ui.HomepageView;
+import com.hinge.challenge.largephoto.util.espresso.EspressoIdlingResource;
 import io.reactivex.observers.DisposableObserver;
 
 import javax.inject.Inject;
@@ -34,20 +34,30 @@ public class HomepagePresenter implements Presenter
     @Override
     public void subscribe()
     {
-
     }
 
     @Override
     public void unsubscribe()
     {
-
     }
 
+    /**
+     * Load all images from Repository
+     */
     public void initialize()
     {
         this.homepageView.hideRetry();
         this.homepageView.showLoading();
+
+        // Prevents Espresso from finishing the activity. Simulates the application is still processing
+        EspressoIdlingResource.increment();
+
         this.imageInteractor.execute(new ImageListObserver(), null);
+    }
+
+    public void onRetryClicked()
+    {
+        this.initialize();
     }
 
     @Override
@@ -56,6 +66,9 @@ public class HomepagePresenter implements Presenter
         this.imageInteractor.dispose();
     }
 
+    /**
+     * Show image at position in separate Activity
+     */
     public void onPictureClick(int position)
     {
         this.homepageView.viewImage(position);
@@ -73,6 +86,11 @@ public class HomepagePresenter implements Presenter
         @Override
         public void onError(Throwable e)
         {
+            if (!EspressoIdlingResource.getIdlingResource().isIdleNow()) {
+                EspressoIdlingResource.decrement(); // Set app as idle.
+            }
+
+            e.printStackTrace();
             homepageView.hideLoading();
             homepageView.showRetry();
         }
@@ -80,7 +98,9 @@ public class HomepagePresenter implements Presenter
         @Override
         public void onComplete()
         {
-
+            if (!EspressoIdlingResource.getIdlingResource().isIdleNow()) {
+                EspressoIdlingResource.decrement(); // Set app as idle.
+            }
         }
     }
 }

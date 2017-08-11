@@ -15,7 +15,7 @@ public class ImageInteractorImpl extends ImageInteractor<ImageResult, Integer>
     }
 
     @Override
-    Observable<ImageResult> buildInteractorObservable(Integer position)
+    protected Observable<ImageResult> buildInteractorObservable(Integer position)
     {
         return this.imageRepository.getImageResultObservable(position);
     }

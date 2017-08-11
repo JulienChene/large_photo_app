@@ -23,7 +23,8 @@
 
         <activity
                 android:name=".ui.activity.GalleryActivity"
-                android:label="@string/activity_gallery_name">
+                android:label="@string/activity_gallery_name"
+                android:parentActivityName=".ui.activity.HomepageActivity">
         </activity>
 
     </application>

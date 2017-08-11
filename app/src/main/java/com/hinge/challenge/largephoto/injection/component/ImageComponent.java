@@ -8,10 +8,11 @@ import com.hinge.challenge.largephoto.ui.fragment.HomepageFragment;
 import dagger.Component;
 
 @PerActivity
-@Component (dependencies = ApplicationComponent.class,
-    modules = {ActivityModule.class, ImageModule.class})
+@Component(dependencies = ApplicationComponent.class,
+        modules = {ActivityModule.class, ImageModule.class})
 public interface ImageComponent
 {
     void inject(HomepageFragment fragment);
+
     void inject(GalleryFragment fragment);
 }

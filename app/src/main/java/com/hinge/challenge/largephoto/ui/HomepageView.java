@@ -7,9 +7,14 @@ import java.util.List;
 public interface HomepageView
 {
     void showLoading();
+
     void hideLoading();
+
     void showRetry();
+
     void hideRetry();
+
     void viewImage(int position);
+
     void showImageList(List<ImageResult> imageList);
 }

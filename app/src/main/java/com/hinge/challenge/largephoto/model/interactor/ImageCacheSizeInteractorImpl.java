@@ -14,7 +14,7 @@ public class ImageCacheSizeInteractorImpl extends ImageInteractor<Integer, Void>
     }
 
     @Override
-    Observable<Integer> buildInteractorObservable(Void aVoid)
+    protected Observable<Integer> buildInteractorObservable(Void aVoid)
     {
         return this.imageRepository.getCacheSize();
     }

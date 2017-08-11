@@ -16,7 +16,7 @@ public class ImageListInteractorImpl extends ImageInteractor<List<ImageResult>, 
     }
 
     @Override
-    Observable<List<ImageResult>> buildInteractorObservable(Void aVoid)
+    protected Observable<List<ImageResult>> buildInteractorObservable(Void aVoid)
     {
         return this.imageRepository.getImagesObservable();
     }

@@ -4,8 +4,7 @@ import com.hinge.challenge.largephoto.model.ImageResult;
 
 public interface GalleryView
 {
-    void showRetry();
-    void hideRetry();
-    void setImage(ImageResult image);
+    void setImage(ImageResult image, int position, int listSize);
+
     void goBack();
 }

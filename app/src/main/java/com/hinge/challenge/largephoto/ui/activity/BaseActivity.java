@@ -17,19 +17,22 @@ public class BaseActivity extends Activity
     Navigator navigator;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
 
         this.getApplicationComponent().inject(this);
     }
 
-    protected void addFragment(int containerViewId, Fragment fragment) {
+    void addFragment(int containerViewId, Fragment fragment)
+    {
         final FragmentTransaction fragmentTransaction = this.getFragmentManager().beginTransaction();
         fragmentTransaction.add(containerViewId, fragment);
         fragmentTransaction.commit();
     }
 
-    protected ApplicationComponent getApplicationComponent() {
+    protected ApplicationComponent getApplicationComponent()
+    {
         return ((LargePhotoApplication) getApplication()).getApplicationComponent();
     }
 

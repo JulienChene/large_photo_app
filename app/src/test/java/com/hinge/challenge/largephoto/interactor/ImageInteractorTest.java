@@ -1,11 +1,13 @@
 package com.hinge.challenge.largephoto.interactor;
 
+import com.hinge.challenge.largephoto.model.interactor.ImageInteractor;
 import com.hinge.challenge.largephoto.model.interactor.ImageListInteractorImpl;
 import com.hinge.challenge.largephoto.model.repository.ImageRepository;
 import com.hinge.challenge.largephoto.util.ModelUtil;
 import com.hinge.challenge.largephoto.util.RxImmediateSchedulerRule;
-import io.reactivex.Single;
-import io.reactivex.observers.DisposableSingleObserver;
+import com.hinge.challenge.largephoto.util.TestDisposableObserver;
+import io.reactivex.Observable;
+import io.reactivex.observers.DisposableObserver;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -18,10 +20,15 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
+/**
+ * Tests the Interactor abstract class
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class ImageInteractorTest
 {
-    private ImageListInteractorImpl imageInteractorImp;
+    private static final int VALUES_PASSED = 10;
+
+    private ImageInteractorTestClass interactorTestClass;
     private TestDisposableObserver testDisposableObserver;
 
     @Mock
@@ -37,25 +44,25 @@ public class ImageInteractorTest
     @Before
     public void setup()
     {
-        this.imageInteractorImp = new ImageListInteractorImpl(imageRepository);
+        this.interactorTestClass = new ImageInteractorTestClass(imageRepository);
         this.testDisposableObserver = new TestDisposableObserver();
 
-        given(imageRepository.getImagesObservable()).willReturn(Single.just(ModelUtil.getImageList(10)));
+        given(imageRepository.getImagesObservable()).willReturn(Observable.just(ModelUtil.getImageList(VALUES_PASSED)));
     }
 
     @Test
     public void testLoadImageSuccessful()
     {
-        imageInteractorImp.loadImages(testDisposableObserver);
+        interactorTestClass.execute(this.testDisposableObserver, "");
 
-        assertThat(testDisposableObserver.valuesCount).isNotZero();
+        assertThat(testDisposableObserver.isComplete());
     }
 
     @Test
     public void testSubscriptionWhenExecutingLoadImages()
     {
-        imageInteractorImp.loadImages(testDisposableObserver);
-        imageInteractorImp.dispose();
+        interactorTestClass.execute(this.testDisposableObserver, null);
+        interactorTestClass.dispose();
 
         assertThat(testDisposableObserver.isDisposed()).isTrue();
     }
@@ -64,23 +71,27 @@ public class ImageInteractorTest
     public void testLoadImagesWithObserverNull()
     {
         expectedException.expect(NullPointerException.class);
-        imageInteractorImp.loadImages(null);
+        interactorTestClass.execute(null, null);
     }
 
-    private static class TestDisposableObserver<T> extends DisposableSingleObserver<T>
+    private static class ImageInteractorTestClass extends ImageInteractor<Object, String>
     {
-        private int valuesCount = 0;
 
-        @Override
-        public void onSuccess(T value)
+        public ImageInteractorTestClass(ImageRepository imageRepository)
         {
-            valuesCount++;
+            super(imageRepository);
         }
 
         @Override
-        public void onError(Throwable e)
+        protected Observable<Object> buildInteractorObservable(String params)
         {
+            return Observable.empty();
+        }
 
+        @Override
+        public void execute(DisposableObserver<Object> observer, String params)
+        {
+            super.execute(observer, params);
         }
     }
 }

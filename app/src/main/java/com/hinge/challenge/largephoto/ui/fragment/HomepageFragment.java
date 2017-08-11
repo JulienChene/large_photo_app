@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +17,11 @@ import butterknife.Unbinder;
 import com.hinge.challenge.largephoto.R;
 import com.hinge.challenge.largephoto.injection.PerActivity;
 import com.hinge.challenge.largephoto.model.ImageResult;
+import com.hinge.challenge.largephoto.ui.HomepageView;
 import com.hinge.challenge.largephoto.ui.activity.HomepageActivity;
 import com.hinge.challenge.largephoto.ui.adapter.ImagesAdapter;
 import com.hinge.challenge.largephoto.ui.adapter.ImagesLayoutManager;
 import com.hinge.challenge.largephoto.ui.presenter.HomepagePresenter;
-import com.hinge.challenge.largephoto.ui.HomepageView;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -169,7 +168,7 @@ public class HomepageFragment extends Fragment implements HomepageView
     @OnClick(R.id.button_retry)
     void onButtonRetryClick()
     {
-        this.loadUserList();
+        this.homepagePresenter.onRetryClicked();
     }
 
     private void initializeRecyclerView()
